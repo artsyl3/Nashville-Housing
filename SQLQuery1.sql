@@ -20,10 +20,47 @@ SELECT * FROM NashvilleHousing
 Where PropertyAddress is null
 order by ParcelID
 
-SELECT * FROM NashvilleHousing a
+SELECT a.ParcelID, a.PropertyAddress,b.parcelID, b.PropertyAddress, isnull(a.PropertyAddress,b.PropertyAddress)
+FROM NashvilleHousing a
 Join NashvilleHousing b
 On a.ParcelID = b.ParcelID
 and a.UniqueID <> b.UniqueID
+where a.PropertyAddress is null
+
+Update a
+Set PropertyAddress = isnull(a.PropertyAddress,b.PropertyAddress)
+FROM NashvilleHousing a
+Join NashvilleHousing b
+On a.ParcelID = b.ParcelID
+and a.UniqueID <> b.UniqueID
+where a.PropertyAddress is null
+
+--............
+
+-- 3. Breaking out into seprate columns(Address, city, state)
+
+SELECT * FROM NashvilleHousing
+
+Select SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) - 1) as Address
+Select SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress)) + 1 , LEN(PropertyAddress)) as Address
+FROM NashvilleHousing
+
+Alter Table NashvilleHousing
+add PropertySplitAddress nvarchar(255);
+
+update [NashvilleHousing ]
+Set PropertySplitAddress = SUBSTRING(PropertyAddress, 1, CHARINDEX(',', PropertyAddress) - 1)
+
+Alter Table NashvilleHousing
+add PropertySplitCity nvarchar(255);
+
+update [NashvilleHousing ]
+Set PropertySplitCity = SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) + 1 , LEN(PropertyAddress))
+
+
+
+
+
 
 
 
