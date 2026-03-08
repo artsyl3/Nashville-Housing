@@ -1,7 +1,7 @@
 --Cleaning data in SQL queries
 --......
 
--- 1. Standardize data format
+-- 1.. Standardize data format
 
 SELECT SaleDateConverted, Convert(Date,SaleDate)as date FROM NashvilleHousing
 
