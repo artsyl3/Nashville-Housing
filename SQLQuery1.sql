@@ -14,7 +14,7 @@ update [NashvilleHousing ]
 Set SaleDateConverted = Convert(Date,SaleDate)
 
 
--- 2. populate property address data
+-- 2. populate property address dataa
 
 SELECT * FROM NashvilleHousing
 Where PropertyAddress is null
@@ -58,10 +58,37 @@ update [NashvilleHousing ]
 Set PropertySplitCity = SUBSTRING(PropertyAddress, CHARINDEX(',', PropertyAddress) + 1 , LEN(PropertyAddress))
 
 
+Select OwnerAddress From NashvilleHousing 
+
+Select PARSENAME(Replace(OwnerAddress, ',' , '.'),3),
+PARSENAME(Replace(OwnerAddress, ',' , '.'),2),
+PARSENAME(Replace(OwnerAddress, ',' , '.'),1)
+From NashvilleHousing
 
 
+Alter Table NashvilleHousing
+add OwnerSplitAddress nvarchar(255);
 
+update [NashvilleHousing ]
+Set OwnerSplitAddress = PARSENAME(Replace(OwnerAddress, ',' , '.'),3)
 
+Alter Table NashvilleHousing
+add OwnerSplitCity nvarchar(255);
 
+update [NashvilleHousing ]
+Set OwnerSplitCity = PARSENAME(Replace(OwnerAddress, ',' , '.'),2)
 
+Alter Table NashvilleHousing
+add OwnerSplitState nvarchar(255);
 
+update [NashvilleHousing ]
+Set OwnerSplitState = PARSENAME(Replace(OwnerAddress, ',' , '.'),1)
+
+--......................
+
+-- Change Y and N to Yes and NO in "Sold as vacant" field
+
+Select Distinct(SoldAsVacant),Count(SoldAsVacant)
+From NashvilleHousing
+Group by SoldAsVacant
+order by 2
